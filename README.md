@@ -1,2 +1,2 @@
 # datasciencecoursera
-Repo for Data Science Toolbox Course
+Repo for Data Science Course from John Hopkins University offered through Coursera
