@@ -1,0 +1,123 @@
+---
+title: "Learning loop functions using Flags data set: lapply, sapply, tapply, vapply"
+author: "Arin Parsa"
+date: "6/6/2020"
+output: 
+  html_document:
+    toc: true
+    theme: united
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Flags data set by UCI ML Rep
+http://archive.ics.uci.edu/ml/datasets/Flags
+
+## Flags Data Set Information
+This data file contains details of various nations and their flags. In this file the fields are separated by spaces (not commas). With this data you can try things like predicting the religion of a country from its size and the colors in its flag.
+
+10 attributes are numeric-valued. The remainder are either Boolean- or nominal-valued.
+
+
+Attribute Information:
+
+1. name: Name of the country concerned
+2. landmass: 1=N.America, 2=S.America, 3=Europe, 4=Africa, 4=Asia, 6=Oceania
+3. zone: Geographic quadrant, based on Greenwich and the Equator; 1=NE, 2=SE, 3=SW, 4=NW
+4. area: in thousands of square km
+5. population: in round millions
+6. language: 1=English, 2=Spanish, 3=French, 4=German, 5=Slavic, 6=Other Indo-European, 7=Chinese, 8=Arabic, 9=Japanese/Turkish/Finnish/Magyar, 10=Others
+7. religion: 0=Catholic, 1=Other Christian, 2=Muslim, 3=Buddhist, 4=Hindu, 5=Ethnic, 6=Marxist, 7=Others
+8. bars: Number of vertical bars in the flag
+9. stripes: Number of horizontal stripes in the flag
+10. colours: Number of different colours in the flag
+11. red: 0 if red absent, 1 if red present in the flag
+12. green: same for green
+13. blue: same for blue
+14. gold: same for gold (also yellow)
+15. white: same for white
+16. black: same for black
+17. orange: same for orange (also brown)
+18. mainhue: predominant colour in the flag (tie-breaks decided by taking the topmost hue, if that fails then the most central hue, and if that fails the leftmost hue)
+19. circles: Number of circles in the flag
+20. crosses: Number of (upright) crosses
+21. saltires: Number of diagonal crosses
+22. quarters: Number of quartered sections
+23. sunstars: Number of sun or star symbols
+24. crescent: 1 if a crescent moon symbol present, else 0
+25. triangle: 1 if any triangles present, 0 otherwise
+26. icon: 1 if an inanimate image present (e.g., a boat), otherwise 0
+27. animate: 1 if an animate image (e.g., an eagle, a tree, a human hand) present, 0 otherwise
+28. text: 1 if any letters or writing on the flag (e.g., a motto or slogan), 0 otherwise
+29. topleft: colour in the top-left corner (moving right to decide tie-breaks)
+30. botright: Colour in the bottom-left corner (moving left to decide tie-breaks)
+
+## Create a vector of column names, and read file as table into a data frame
+```{r}
+
+colnames <- c("country", "landmass", "zone", "area", "population", "language", "religion", "bars", "stripes", "colors", "red", "green", "blue", "gold", "white", "black", "orange","mainhue", "circles", "crosses", "saltires", "quarters", "sunstars", "crescents", "triangle", "icon","animate", "text", "topleft", "botright")
+
+# get flag data set from UCI. If this fails, get the dataset from the repo of this markdown file
+dataset <-"https://archive.ics.uci.edu/ml/machine-learning-databases/flags/flag.data"
+
+# read data into a table. 
+flags <- read.table(dataset, sep=",", col.names = colnames, as.is = TRUE)
+
+```
+## Verify data is read properly and all countries are loaded
+```{r}
+flags[,1]
+```
+
+## Various operations to learn lapply and sapply
+```{r}
+
+# create a subset for data for flag colors
+flag_colors <- flags[, 11:17]
+head(flag_colors)
+
+lapply(flag_colors, sum) #returns a list of number of flags based on color
+sapply(flag_colors, sum) # sapply returns a vector since list value has only one element which the number of flags
+sapply(flag_colors, mean) # find the mean of flag colors
+
+
+flag_shapes <- flags[,19:23] #returns a data frame of flag shapes
+lapply(flag_shapes, range)  #returns a list containing range of flag shapes (how many flags per shape)
+shape_mat <-sapply(flag_shapes, range) # sapply on range will return a matrix this time since list element has two values (lower, upper values of range)
+shape_mat 
+unique(c(3, 4, 5, 5, 5, 6, 6)) #an example to show that unique function will return only 3, 4, 5, 6
+unique_vals_list <- lapply(flags, unique) # returns a list of unique values per column in flags data frame
+unique_vals_list
+
+v <- sapply(unique_vals_list, length) #sapply returns a vector of number of unique values per column
+v
+
+l <- lapply(unique_vals_list, length) #lapply returns a list containing the number of unique values per column
+l
+
+v["landmass"] # returns number of unique landmasses. Note the use of [ since sapply(unique_vals_list, length) returned us a vector containing the number of unique elements per column
+
+
+l[["landmass"]] # returns number of unique landmasses. Note the use of [[ since lapply(unique_vals_list, length)
+
+sapply(flags,unique) #returns unique values in the flag data frame
+
+
+lapply(unique_vals_list, function(elem) elem[2]) #using a custom function, return second element in the unique values
+
+```
+## Various examples to learn tapply
+tapply allows us to run a function on a dataset and group by a subset
+```{r}
+populationbyreligion <- tapply(flags$population, flags$religion, sum) #returns sum of population by religion
+populationbyreligion_and_lang <- tapply(flags$population, list(flags$religion, flags$language), sum) #groupby religion and language
+
+
+```
+
+
+
+
+
