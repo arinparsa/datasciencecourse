@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title>cachematrix.R</title>
+  <meta name="Author" content="arinparsa">
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="1894.4">
+  <style type="text/css">
+    p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; line-height: 18.0px; font: 13.0px Courier; color: #262626; -webkit-text-stroke: #262626; background-color: #f2f2f2}
+    p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; line-height: 18.0px; font: 13.0px Courier; color: #262626; -webkit-text-stroke: #262626; background-color: #f2f2f2; min-height: 16.0px}
+    span.s1 {font-kerning: none}
+  </style>
+</head>
+<body>
+<h1 style="margin: 0.0px 0.0px 10.0px 0.0px; line-height: 41.0px; font: 38.0px 'Helvetica Neue'; color: #262626; -webkit-text-stroke: #262626"><span class="s1">cachematrix.R</span></h1>
+<h4 style="margin: 0.0px 0.0px 10.0px 0.0px; line-height: 19.0px; font: 18.0px 'Helvetica Neue'; color: #262626; -webkit-text-stroke: #262626"><span class="s1">arinparsa</span></h4>
+<h4 style="margin: 0.0px 0.0px 10.0px 0.0px; line-height: 19.0px; font: 18.0px 'Helvetica Neue'; color: #262626; -webkit-text-stroke: #262626"><span class="s1">2020-06-22</span></h4>
+<p class="p3"><span class="s1">## makeCacheMatrix creates a special "matrix", which is a list</span></p>
+<p class="p3"><span class="s1">## containing a function to set and get the value of the matrix, and</span></p>
+<p class="p3"><span class="s1">## set and get the inverse of the matrix</span></p>
+<p class="p4"><span class="s1"></span><br></p>
+<p class="p3"><span class="s1">makeCacheMatrix &lt;- function(x = matrix()) {</span></p>
+<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>i &lt;- NULL</span></p>
+<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span># set the matrix and clear the cache if any</span></p>
+<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>set &lt;- function(y) {</span></p>
+<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>x &lt;&lt;- y<span class="Apple-converted-space">    </span># Set the value</span></p>
+<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>i &lt;&lt;- NULL # Clear the cache</span></p>
+<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
+<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span># get the matrix</span></p>
+<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>get &lt;- function() x</span></p>
+<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>#set inverse in cache</span></p>
+<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>setInverse &lt;- function(inverse) i &lt;&lt;- inverse</span></p>
+<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span># return cached inverse</span></p>
+<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>getInverse &lt;- function() i</span></p>
+<p class="p4"><span class="s1"><span class="Apple-converted-space">  </span></span></p>
+<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>#list of four functions to get and set matrix, get and set cached inverse</span></p>
+<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>list(set = set, get = get,</span></p>
+<p class="p3"><span class="s1"><span class="Apple-converted-space">       </span>setInverse = setInverse,</span></p>
+<p class="p3"><span class="s1"><span class="Apple-converted-space">       </span>getInverse = getInverse)</span></p>
+<p class="p3"><span class="s1">}</span></p>
+<p class="p4"><span class="s1"></span><br></p>
+<p class="p3"><span class="s1">## cacheSolve calculates the inverse of the special "matrix"</span></p>
+<p class="p3"><span class="s1">## created with the makeCacheMatrix function. However, it first checks<span class="Apple-converted-space"> </span></span></p>
+<p class="p3"><span class="s1">## to see if the inverse has already been calculated. If so, it gets<span class="Apple-converted-space"> </span></span></p>
+<p class="p3"><span class="s1">## the inverse from the cache and skips the computation. Otherwise,<span class="Apple-converted-space"> </span></span></p>
+<p class="p3"><span class="s1">## it calculates the inverse of the data (matrix) and sets the value of the inverse<span class="Apple-converted-space"> </span></span></p>
+<p class="p3"><span class="s1">## in the cache via the setInverse function.</span></p>
+<p class="p4"><span class="s1"></span><br></p>
+<p class="p3"><span class="s1">cacheSolve &lt;- function(x, ...) {</span></p>
+<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>i &lt;- x$getInverse() # This fetches the cached value for the inverse</span></p>
+<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>if(!is.null(i)) { # If the cache was not empty, we can just return it</span></p>
+<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>message("getting cached data")</span></p>
+<p class="p3"><span class="s1"><span class="Apple-converted-space">    </span>return(i)</span></p>
+<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>}</span></p>
+<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span># The cache was empty. We need to calculate it, cache it, and then return it.</span></p>
+<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>data &lt;- x$get()<span class="Apple-converted-space">  </span># Get value of matrix</span></p>
+<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>i &lt;- solve(data) # Calculate inverse</span></p>
+<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>x$setInverse(i)<span class="Apple-converted-space">  </span># Cache the result</span></p>
+<p class="p3"><span class="s1"><span class="Apple-converted-space">  </span>i <span class="Apple-converted-space">   </span></span></p>
+<p class="p3"><span class="s1">}</span></p>
+</body>
+</html>
