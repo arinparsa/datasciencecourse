@@ -3,7 +3,7 @@ title: "Air Pollution - Data Analysis "
 author: "Arin Parsa"
 date: "6/3/2020"
 output: 
-  html_document:
+  pdf_document:
     toc: true
 ---
 

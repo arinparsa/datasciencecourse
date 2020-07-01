@@ -3,9 +3,8 @@ title: "Learning loop functions using Flags data set: lapply, sapply, tapply, va
 author: "Arin Parsa"
 date: "6/6/2020"
 output: 
-  html_document:
+  pdf_document:
     toc: true
-    theme: united
 ---
 
 ```{r setup, include=FALSE}

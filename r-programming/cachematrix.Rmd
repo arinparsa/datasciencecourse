@@ -3,9 +3,8 @@ title: "Caching the inverse of a matrix"
 author: "Arin Parsa"
 date: "6/22/2020"
 output: 
-  html_document:
+  pdf_document:
     toc: true
-    theme: united
 ---
 
 ```{r setup, include=FALSE}
