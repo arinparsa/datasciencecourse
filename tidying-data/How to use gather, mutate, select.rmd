@@ -1,0 +1,72 @@
+---
+title: "Test"
+author: "Arin Parsa"
+date: "6/9/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+install.packages("readr", repos='http://cran.us.r-project.org')
+install.packages("tidyr", repos='http://cran.us.r-project.org')
+install.packages("dplyr", repos='http://cran.us.r-project.org')
+library(readr)
+library(tidyr)
+library(dplyr)
+
+```
+
+###  Column headers are values, not variable names.
+```{r}
+students <- read.csv("students.csv") #file from swirl() exercise is in this repo 
+students
+gather(students, sex, count, -grade)
+
+```
+
+### Multiple variables are stored in one column
+```{r}
+students2 <- read.csv("students2.csv")
+students2
+res <- gather(students2, sex_class, count, -grade)
+res
+separate(res, sex_class, c("sex", "class"))
+
+
+```
+### Variables are stored in both rows and columns.
+```{r}
+
+students3 <- read.csv("students3.csv")
+students3
+##class_1 through 5 columns will now be under 1 variable class
+res <- gather(students3, class, grade, class1:class5, na.rm = TRUE)
+res
+## midterm and final grade rows will be in different variable columns (midterm, final with values being the grades)
+res <-spread(res, test,grade )
+res
+#class1, class2...class5 values be stripped of "class" and just be the number
+mutate(res, class = parse_number(class))
+
+
+```
+## A single observational unit is stored in multiple tables.
+```{r}
+students4 <- read.csv("students4.csv")
+students4 # note that name, sec are repeated multiple times, so need to split this table into two: one for student info, and the other for grades
+ studentinfo <- select(students4, id , name, sex)
+ studentinfo <-unique(studentinfo)
+ studentinfo
+ 
+ gradebook <- select(students4, id, class, midterm, final)
+ gradebook 
+```
+
+
+
+
+
+
