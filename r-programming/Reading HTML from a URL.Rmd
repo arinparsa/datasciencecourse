@@ -1,0 +1,28 @@
+---
+title: "Reading HTML from a URL"
+author: "Arin Parsa"
+date: "7/13/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Example for reading HTML from a URL
+
+```{r}
+connection <- url("http://biostat.jhsph.edu/~jleek/contact.html")
+
+## readLines gives a character array back for every line from the HTML file
+txt <- readLines(connection)
+close(connection)
+class(txt)
+txt
+## Finding number of characters on a line
+nchar(txt[10])
+nchar(txt[20])
+nchar(txt[30])
+nchar(txt[100])
+```
+
