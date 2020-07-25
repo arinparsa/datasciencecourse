@@ -1,0 +1,57 @@
+---
+title: "How to use sub, gsub, matches, and grepl"
+author: "Arin Parsa"
+date: "7/24/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## sub and gsub
+sub() substitutes one occurrence of a pattern while gsub() substitutes all occurrences
+```{r}
+library(dplyr)
+
+name <- "Arin:Parsa"
+sub(":", " ", name)
+
+
+name2 <- "George:Walker:Bush"
+gsub(":", " ", name2)
+
+sentence <- "the weather is pleasant."
+gsub("^t", "T", sentence)
+
+```
+
+## matches and grepl
+matches() and grepl() can be used to match regex patterns. Regex is a regular expression, which is a sequence of characters used in search patterns. It contains literals as well as metacharacters such as ^ for beginning of a sentence, $ for end of sentence, and many more.
+
+matches() can be used in select() in dplyr to match regex patterns to select column variables while grepl() can be used anywhere including in filter() for rows
+Below example shows how to use matches() and grepl()
+
+```{r}
+## Load GDP and educational datasets for countries
+gdp <- read.csv("https://d396qusza40orc.cloudfront.net/getdata%2Fdata%2FGDP.csv")
+edu <- read.csv("https://d396qusza40orc.cloudfront.net/getdata%2Fdata%2FEDSTATS_Country.csv")
+
+gdp <- gdp[5:194,]
+
+gdp <- gdp %>% rename(Rank = Gross.domestic.product.2012, CountryCode = X) %>% mutate(Rank = as.numeric(Rank))
+
+## Merging the gdp and edu datasets
+merge_df <- merge(gdp, edu, by = "CountryCode")
+
+## Using matches() to select only the columns that have .Name in their titles
+df_col_names <- merge_df %>% select(matches(".[Nn]ame"))
+head(df_col_names, 5)
+
+## Using grepl() to select the observations in the Special.Notes column that have the string "Fiscal year end: June" in them
+merge_df1 <- merge_df %>% filter(grepl("Fiscal year end: June", Special.Notes))
+merge_df1
+
+```
+
+
